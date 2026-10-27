@@ -3,110 +3,514 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>O'qituvchi Kabineti | Ekotizim</title>
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>Parollar Generatori va Xavfsizlik Tahlili</title>
+    <!-- Google Fonts va FontAwesome Ikonkalari -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --bg-color: #0f172a;
+            --card-bg: #1e293b;
+            --primary: #3b82f6;
+            --primary-hover: #2563eb;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --good: #10b981;
+            --strong: #06b6d4;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 900px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+
+        @media (min-width: 768px) {
+            .container {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .card {
+            background: var(--card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        .header {
+            grid-column: 1 / -1;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+            color: #fff;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--primary);
+        }
+
+        /* Form Elementlari */
+        .input-group {
+            position: relative;
+            margin-bottom: 16px;
+        }
+
+        .input-group input {
+            width: 100%;
+            padding: 14px 45px 14px 14px;
+            background: #0f172a;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: #fff;
+            font-size: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        .input-group input:focus {
+            border-color: var(--primary);
+        }
+
+        .input-group .toggle-btn {
+            position: absolute;
+            right: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+
+        /* Progres Bar */
+        .strength-meter {
+            height: 8px;
+            width: 100%;
+            background: #334155;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 12px;
+        }
+
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: width 0.4s ease, background-color 0.4s ease;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 16px;
+        }
+
+        /* Statistika Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-top: 15px;
+        }
+
+        .stat-card {
+            background: #0f172a;
+            padding: 12px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+        }
+
+        .stat-card .label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .stat-card .value {
+            font-size: 0.95rem;
+            font-weight: 600;
+            word-break: break-all;
+        }
+
+        /* Generatsoya Boshqaruvi */
+        .control-group {
+            margin-bottom: 16px;
+        }
+
+        .control-group label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            accent-color: var(--primary);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.88rem;
+            cursor: pointer;
+        }
+
+        .checkbox-item input {
+            accent-color: var(--primary);
+            width: 16px;
+            height: 16px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 12px;
+            background: var(--primary);
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.2s;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+        }
+
+        .formula-box {
+            grid-column: 1 / -1;
+            background: #0f172a;
+            border: 1px dashed var(--border);
+            border-radius: 8px;
+            padding: 16px;
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .formula-box code {
+            color: #38bdf8;
+            font-family: monospace;
+        }
+    </style>
 </head>
-<body class="bg-gray-100 font-sans">
+<body>
 
-    <div class="max-w-4xl mx-auto p-6">
-        <!-- Header -->
-        <header class="bg-white shadow-md rounded-xl p-6 mb-6">
-            <h1 class="text-2xl font-bold text-gray-800">👨‍🏫 O'qituvchi Kabineti</h1>
-            <p class="text-gray-600">Guruhlarga mustaqil ish berish va talabalar natijalarini tekshirish.</p>
-        </header>
+<div class="container">
+    <div class="header">
+        <h1><i class="fa-solid fa-shield-halved"></i> Parollar Xavfsizligi Tahlili</h1>
+        <p>Kombinatorika va ehtimollar nazariyasi asosida parollarni baholash va generatsiya qilish</p>
+    </div>
 
-        <!-- Guruhni tanlash -->
-        <div class="bg-white shadow-md rounded-xl p-6 mb-6">
-            <label class="block text-gray-700 font-semibold mb-2">O'qitish guruhini tanlang:</label>
-            <select id="groupSelect" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500" onchange="renderStudents()">
-                <option value="F-KI-101-25">F-KI-101-25</option>
-                <option value="F-KI-102-25">F-KI-102-25</option>
-            </select>
+    <!-- 1-BO'LIM: TAHLIL -->
+    <div class="card">
+        <div class="section-title">
+            <i class="fa-solid fa-magnifying-glass-chart"></i> Parol Tahlili
+        </div>
+        
+        <div class="input-group">
+            <input type="password" id="passwordInput" placeholder="Parolni kiriting..." autocomplete="off">
+            <button class="toggle-btn" id="togglePassword"><i class="fa-regular fa-eye"></i></button>
         </div>
 
-        <!-- Talabalar ro'yxati -->
-        <div class="bg-white shadow-md rounded-xl p-6 mb-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">👥 Talabalar ro'yxati va ishlari</h2>
-            <div id="studentList" class="divide-y divide-gray-200">
-                <!-- JavaScript orqali to'ldiriladi -->
-            </div>
+        <div class="strength-meter">
+            <div class="strength-bar" id="strengthBar"></div>
         </div>
 
-        <!-- Yangi topshiriq berish -->
-        <div class="bg-white shadow-md rounded-xl p-6">
-            <h2 class="text-xl font-bold text-gray-800 mb-4">📝 Guruhga Yangi Mustaqil Ish Berish</h2>
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2">Topshiriq mavzusi:</label>
-                <input type="text" id="taskTitle" placeholder="Masalan: Web dasturlash asoslari mustaqil ishi" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <span class="status-badge" id="statusBadge" style="background: #334155; color: #fff;">Kutilmoqda...</span>
+            <span id="entropyText" style="font-size: 0.85rem; color: var(--text-muted);">0 bit</span>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="label">Alifbo o'lchami (N)</div>
+                <div class="value" id="alphabetSize">0 belgilar</div>
             </div>
-            <div class="mb-4">
-                <label class="block text-gray-700 font-semibold mb-2">Topshirish muddati:</label>
-                <input type="date" id="taskDeadline" class="w-full border border-gray-300 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-blue-500">
+            <div class="stat-card">
+                <div class="label">Kombinatsiyalar ($N^L$)</div>
+                <div class="value" id="totalCombinations">0</div>
             </div>
-            <button onclick="assignTask()" class="bg-blue-600 text-white font-semibold px-6 py-3 rounded-lg hover:bg-blue-700 transition">Topshiriqni yuborish</button>
-            <p id="successMsg" class="text-green-600 mt-3 hidden">Topshiriq guruhga muvaffaqiyatli yuborildi!</p>
+            <div class="stat-card" style="grid-column: 1 / -1;">
+                <div class="label">Buzish uchun ketadigan taxminiy vaqt (10 mlrd/sek)</div>
+                <div class="value" id="crackTime" style="color: #38bdf8;">0 soniya</div>
+            </div>
         </div>
     </div>
 
-    <script>
-        // Simulyatsiya qilingan baza
-        const studentsData = [
-            { id: 1, name: "Alisherov B.", group: "F-KI-101-25", status: "Topshirilmagan" },
-            { id: 2, name: "Karimova Z.", group: "F-KI-101-25", status: "Topshirilgan" },
-            { id: 3, name: "Tohirov M.", group: "F-KI-102-25", status: "Topshirilmagan" }
+    <!-- 2-BO'LIM: GENERATOR -->
+    <div class="card">
+        <div class="section-title">
+            <i class="fa-solid fa-key"></i> Parol Generatori
+        </div>
+
+        <div class="control-group">
+            <label>
+                <span>Uzunlik:</span>
+                <span id="lengthVal" style="font-weight: bold; color: var(--primary);">16</span>
+            </label>
+            <input type="range" id="lengthRange" min="6" max="64" value="16">
+        </div>
+
+        <div class="checkbox-group">
+            <label class="checkbox-item">
+                <input type="checkbox" id="incUppercase" checked> Katta harflar (A-Z)
+            </label>
+            <label class="checkbox-item">
+                <input type="checkbox" id="incLowercase" checked> Kichik harflar (a-z)
+            </label>
+            <label class="checkbox-item">
+                <input type="checkbox" id="incNumbers" checked> Raqamlar (0-9)
+            </label>
+            <label class="checkbox-item">
+                <input type="checkbox" id="incSymbols" checked> Belgilar (!@#$)
+            </label>
+        </div>
+
+        <button class="btn" id="generateBtn">
+            <i class="fa-solid fa-wand-magic-sparkles"></i> Mukammal Parol Yaratish
+        </button>
+    </div>
+
+    <!-- MATEMATIK FORMULALAR CHUNTIRISHI -->
+    <div class="formula-box">
+        <strong style="color: #fff;"><i class="fa-solid fa-calculator"></i> Matematik Asoslar:</strong><br>
+        1. <strong>Kombinatsiyalar soni:</strong> <code>C = N<sup>L</sup></code> (N - alifbo belgilar soni, L - parol uzunligi).<br>
+        2. <strong>Axborot Entropiyasi:</strong> <code>E = L × log<sub>2</sub>(N)</code> (Parolning bitlardagi mustahkamligi).<br>
+        3. <strong>Buzish vaqti (Brute-Force):</strong> Tezlik 10,000,000,000 kombinatsiya/soniya deb olindi.
+    </div>
+</div>
+
+<script>
+    // Elementlar
+    const passwordInput = document.getElementById('passwordInput');
+    const togglePassword = document.getElementById('togglePassword');
+    const strengthBar = document.getElementById('strengthBar');
+    const statusBadge = document.getElementById('statusBadge');
+    const alphabetSizeEl = document.getElementById('alphabetSize');
+    const totalCombinationsEl = document.getElementById('totalCombinations');
+    const crackTimeEl = document.getElementById('crackTime');
+    const entropyText = document.getElementById('entropyText');
+
+    const lengthRange = document.getElementById('lengthRange');
+    const lengthVal = document.getElementById('lengthVal');
+    const incUppercase = document.getElementById('incUppercase');
+    const incLowercase = document.getElementById('incLowercase');
+    const incNumbers = document.getElementById('incNumbers');
+    const incSymbols = document.getElementById('incSymbols');
+    const generateBtn = document.getElementById('generateBtn');
+
+    // Belgilar to'plamlari
+    const UPPER = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    const LOWER = 'abcdefghijklmnopqrstuvwxyz';
+    const NUMS = '0123456789';
+    const SYMBOLS = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+
+    // Parol tahlili funksiyasi
+    function analyzePassword(pwd) {
+        if (!pwd) {
+            resetStats();
+            return;
+        }
+
+        let N = 0;
+        let hasLower = /[a-z]/.test(pwd);
+        let hasUpper = /[A-Z]/.test(pwd);
+        let hasNum = /[0-9]/.test(pwd);
+        let hasSym = /[^a-zA-Z0-9]/.test(pwd);
+
+        if (hasLower) N += 26;
+        if (hasUpper) N += 26;
+        if (hasNum) N += 10;
+        if (hasSym) N += 32;
+
+        const L = pwd.length;
+        // Kombinatsiyalar soni N^L
+        const combinations = Math.pow(N, L);
+        
+        // Entropiya: L * log2(N)
+        const entropy = N > 0 ? L * Math.log2(N) : 0;
+
+        // Vizual ko'rsatgichlar
+        updateUI(N, combinations, entropy, L);
+    }
+
+    function updateUI(N, combinations, entropy, length) {
+        alphabetSizeEl.innerText = `${N} ta belgi`;
+        
+        // Katta sonlarni chiroyli chiqarish
+        if (combinations > 1e15) {
+            totalCombinationsEl.innerText = combinations.toExponential(2);
+        } else {
+            totalCombinationsEl.innerText = combinations.toLocaleString();
+        }
+
+        entropyText.innerText = `${Math.round(entropy)} bit`;
+
+        // Buzish vaqtini hisoblash (Brute-force: 10 milliard urunish/sekund)
+        const guessesPerSecond = 1e10; 
+        const seconds = combinations / (2 * guessesPerSecond); // O'rtacha 50% ehtimollikda topiladi
+
+        crackTimeEl.innerText = formatTime(seconds);
+
+        // Darajani aniqlash va bar rangini o'zgartirish
+        let score = 0;
+        if (entropy < 28) score = 1;
+        else if (entropy < 36) score = 2;
+        else if (entropy < 60) score = 3;
+        else if (entropy < 128) score = 4;
+        else score = 5;
+
+        const styles = [
+            { width: '0%', color: '#334155', text: 'Kutilmoqda...' },
+            { width: '20%', color: 'var(--danger)', text: 'Juda Zaif' },
+            { width: '40%', color: 'var(--warning)', text: 'Zaif' },
+            { width: '65%', color: '#eab308', text: 'Oʻrtacha' },
+            { width: '85%', color: 'var(--good)', text: 'Mustahkam' },
+            { width: '100%', color: 'var(--strong)', text: 'Juda Kuchli' }
         ];
 
-        function renderStudents() {
-            const selectedGroup = document.getElementById('groupSelect').value;
-            const container = document.getElementById('studentList');
-            container.innerHTML = '';
+        strengthBar.style.width = styles[score].width;
+        strengthBar.style.backgroundColor = styles[score].color;
+        statusBadge.style.backgroundColor = styles[score].color;
+        statusBadge.innerText = styles[score].text;
+    }
 
-            const filtered = studentsData.filter(s => s.group === selectedGroup);
+    function formatTime(seconds) {
+        if (seconds < 1) return "Zudlik bilan (0.01 soniya)";
+        if (seconds < 60) return `${Math.round(seconds)} soniya`;
+        
+        const minutes = seconds / 60;
+        if (minutes < 60) return `${Math.round(minutes)} daqiqa`;
+        
+        const hours = minutes / 60;
+        if (hours < 24) return `${Math.round(hours)} soat`;
+        
+        const days = hours / 24;
+        if (days < 365) return `${Math.round(days)} kun`;
+        
+        const years = days / 365;
+        if (years < 1000) return `${Math.round(years)} yil`;
+        if (years < 1e6) return `${(years / 1000).toFixed(1)} ming yil`;
+        if (years < 1e9) return `${(years / 1e6).toFixed(1)} million yil`;
+        return `${(years / 1e9).toFixed(1)} milliard yil`;
+    }
 
-            if (filtered.length === 0) {
-                container.innerHTML = '<p class="text-gray-500 py-3">Bu guruhda talabalar yo\'q.</p>';
-                return;
-            }
+    function resetStats() {
+        strengthBar.style.width = '0%';
+        statusBadge.style.backgroundColor = '#334155';
+        statusBadge.innerText = 'Kutilmoqda...';
+        alphabetSizeEl.innerText = '0 belgilar';
+        totalCombinationsEl.innerText = '0';
+        crackTimeEl.innerText = '0 soniya';
+        entropyText.innerText = '0 bit';
+    }
 
-            filtered.forEach(student => {
-                const row = document.createElement('div');
-                row.className = 'py-3 flex justify-between items-center';
-                row.innerHTML = `
-                    <div>
-                        <span class="font-medium text-gray-800">${student.name}</span>
-                        <span class="ml-4 text-sm px-2 py-1 rounded ${student.status === 'Topshirilgan' ? 'bg-green-100 text-green-700' : 'bg-yellow-100 text-yellow-700'}">${student.status}</span>
-                    </div>
-                    <button onclick="evaluateStudent(${student.id})" class="bg-green-600 text-white px-4 py-2 rounded-lg text-sm hover:bg-green-700 transition">Baholash</button>
-                `;
-                container.appendChild(row);
-            });
+    // Parol Generatsiya qilish
+    function generatePassword() {
+        let chars = '';
+        if (incUppercase.checked) chars += UPPER;
+        if (incLowercase.checked) chars += LOWER;
+        if (incNumbers.checked) chars += NUMS;
+        if (incSymbols.checked) chars += SYMBOLS;
+
+        if (!chars) {
+            alert("Kamida bitta belgi turini tanlang!");
+            return;
         }
 
-        function evaluateStudent(id) {
-            const student = studentsData.find(s => s.id === id);
-            if (student) {
-                student.status = "Baholandi";
-                alert(`${student.name} ning ishi qabul qilindi va baho qo'yildi!`);
-                renderStudents();
-            }
+        let length = parseInt(lengthRange.value);
+        let password = '';
+        
+        // Kriptografik xavfsiz tasodifiy sonlar generatsiyasi
+        const array = new Uint32Array(length);
+        window.crypto.getRandomValues(array);
+
+        for (let i = 0; i < length; i++) {
+            password += chars[array[i] % chars.length];
         }
 
-        function assignTask() {
-            const title = document.getElementById('taskTitle').value;
-            const deadline = document.getElementById('taskDeadline').value;
-            if (title && deadline) {
-                const msg = document.getElementById('successMsg');
-                msg.classList.remove('hidden');
-                setTimeout(() => msg.classList.add('hidden'), 3000);
-                document.getElementById('taskTitle').value = '';
-            } else {
-                alert("Iltimos, barcha maydonlarni to'ldiring!");
-            }
-        }
+        passwordInput.value = password;
+        analyzePassword(password);
+    }
 
-        // Boshlang'ich yuklash
-        renderStudents();
-    </script>
+    // Event Listener-lar
+    passwordInput.addEventListener('input', (e) => analyzePassword(e.target.value));
+
+    togglePassword.addEventListener('click', () => {
+        const type = passwordInput.type === 'password' ? 'text' : 'password';
+        passwordInput.type = type;
+        togglePassword.innerHTML = type === 'password' 
+            ? '<i class="fa-regular fa-eye"></i>' 
+            : '<i class="fa-regular fa-eye-slash"></i>';
+    });
+
+    lengthRange.addEventListener('input', (e) => {
+        lengthVal.innerText = e.target.value;
+    });
+
+    generateBtn.addEventListener('click', generatePassword);
+
+    // Dastlabki generatsiya
+    generatePassword();
+</script>
+
 </body>
 </html>
